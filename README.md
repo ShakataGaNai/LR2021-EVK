@@ -31,3 +31,8 @@ This takes about 8 GB of disk: about 6.4 GB for the workspace and 1.4 GB for the
 `~/zephyr-sdk-1.0.1`.
 
 Build and flash commands for each project are in its README.
+
+## License
+
+MIT (see [`LICENSE`](LICENSE)), except files derived from Semtech sources, which keep
+the Clear BSD or Apache-2.0 license stated in their headers.
