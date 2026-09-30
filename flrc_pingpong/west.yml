@@ -1,0 +1,11 @@
+# West manifest: pulls usp_zephyr v1.2.1, which imports Zephyr v4.4.0 + USP.
+manifest:
+  projects:
+    - import: true
+      name: usp_zephyr
+      path: usp_zephyr
+      url: https://github.com/Lora-net/usp_zephyr
+      revision: v1.2.1
+
+  self:
+    path: flrc_pingpong

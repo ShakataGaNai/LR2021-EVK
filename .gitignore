@@ -1,0 +1,13 @@
+# West-managed checkouts (restored by `west update`)
+.west/
+zephyr/
+modules/
+usp_zephyr/
+bootloader/
+tools/
+
+# Local environment and build output
+.venv/
+build/
+build_*/
+.DS_Store

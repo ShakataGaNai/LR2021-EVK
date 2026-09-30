@@ -1,0 +1,59 @@
+# Copyright (c) 2026 Semtech Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# Adapted from swdm031_img_xfer (role choice).
+
+menu "FLRC throughput demo"
+
+choice APP_ROLE
+	prompt "Device role"
+	default APP_ROLE_TX
+	help
+	  TX sends FLRC packets back to back. RX receives and shows goodput.
+	  Build RX with -DCONFIG_APP_ROLE_RX=y.
+
+config APP_ROLE_TX
+	bool "Transmitter"
+
+config APP_ROLE_RX
+	bool "Receiver"
+
+endchoice # APP_ROLE
+
+config APP_RF_FREQ_MHZ
+	int "RF frequency in MHz"
+	default 2440
+	help
+	  >= 1500 MHz selects the LR2021 HF (2.4 GHz) RX path and HF PA automatically.
+
+config APP_TX_POWER_DBM
+	int "TX power in dBm"
+	default 5
+	range -17 12
+	help
+	  The LR2021 HF PA range is -17..+12 dBm (usp_zephyr lr20xx_ral_bsp_calibration.c).
+
+config APP_PAYLOAD_SIZE
+	int "FLRC payload size in bytes"
+	default 511
+	range 6 511
+	help
+	  LR20xx FLRC payload range is 6..511 bytes (lr20xx_radio_flrc_types.h).
+	  First 4 bytes carry the sequence number.
+
+config APP_TX_PIPELINE
+	bool "Pre-load the next TX payload in the radio FIFO while the current one is on air"
+	default y
+	help
+	  Needs 2 x APP_PAYLOAD_SIZE <= 1024 (LR20xx extended TX FIFO).
+
+config APP_SEQ_RESYNC_GAP
+	int "Largest sequence jump counted as lost packets"
+	default 10000
+	help
+	  A bigger forward jump, or any backward jump, is treated as a TX restart:
+	  the receiver re-syncs on the new sequence number without counting losses.
+
+endmenu
+
+source "Kconfig.zephyr"
