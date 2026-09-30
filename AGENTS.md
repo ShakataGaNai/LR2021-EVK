@@ -25,12 +25,7 @@ setup, build and flash commands are in `README.md` and each project's README.
 
 ## Radio gotchas
 
-- The USP RAC scheduler works in whole milliseconds, so each packet costs about 3 ms of overhead. For high-throughput FLRC, take the radio with `smtc_rac_immediate_radio_access()` and drive `ral_lr20xx_*` directly, as `flrc_pingpong/src/app_flrc.c` does.
+- The USP RAC scheduler works in whole milliseconds, so each packet costs about 3 ms of overhead. For high-throughput FLRC, take the radio with `smtc_rac_immediate_radio_access()` and drive `ral_lr20xx_*` directly, as `flrc_throughput/src/app_flrc.c` does.
 - RAC and radio callbacks run in the USP thread. They hand data to the display thread and never call LVGL or I2C.
 - FLRC RX setup writes all three sync words, so all three pointers must be valid.
 - The RX buffer must be at least `max_rx_size`; a smaller buffer panics on submit.
-
-## Git
-
-- Leave committing and pushing to the user.
-- Before a commit, confirm the author email with the user, who switches between work and personal identities.

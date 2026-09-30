@@ -6,7 +6,7 @@
  * The Clear BSD License
  * Copyright Semtech Corporation 2026. All rights reserved.
  *
- * Modified for flrc_pingpong: image path removed, big-text layout added.
+ * Modified for flrc_throughput: image path removed, big-text layout added.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the disclaimer

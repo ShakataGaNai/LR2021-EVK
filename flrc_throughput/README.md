@@ -4,8 +4,6 @@ One-way FLRC link between two boards: XIAO nRF54L15 + Wio-LR2021 on the LoRa Plu
 Expansion Board (SSD1306 OLED). The TX board streams packets back to back. The RX
 board shows goodput and packet success rate once a second.
 
-The directory is still called `flrc_pingpong`, but the app is one-way.
-
 Measured on the bench (boards about 1 m apart, RSSI about -40 dBm):
 
 - TX: 526 packets/s, 2.15 Mbps payload.
@@ -58,20 +56,20 @@ source .venv/bin/activate
 # Transmitter (default role)
 west build -p -b xiao_nrf54l15/nrf54l15/cpuapp \
   --shield semtech_loraplus_expansion_board --shield semtech_wio_lr2021 \
-  flrc_pingpong -d flrc_pingpong/build_tx \
+  flrc_throughput -d flrc_throughput/build_tx \
   -- -DEXTRA_DTC_OVERLAY_FILE=boards/oled_addr_0x3d.overlay   # 7110B0C1's OLED is at 0x3D
 
 # Receiver
 west build -p -b xiao_nrf54l15/nrf54l15/cpuapp \
   --shield semtech_loraplus_expansion_board --shield semtech_wio_lr2021 \
-  flrc_pingpong -d flrc_pingpong/build_rx -- -DCONFIG_APP_ROLE_RX=y
+  flrc_throughput -d flrc_throughput/build_rx -- -DCONFIG_APP_ROLE_RX=y
 ```
 
 ## Flash
 
 ```bash
-pyocd flash -t nrf54l -u 3EF60302 flrc_pingpong/build_rx/zephyr/zephyr.hex
-pyocd flash -t nrf54l -u 7110B0C1 flrc_pingpong/build_tx/zephyr/zephyr.hex
+pyocd flash -t nrf54l -u 3EF60302 flrc_throughput/build_rx/zephyr/zephyr.hex
+pyocd flash -t nrf54l -u 7110B0C1 flrc_throughput/build_tx/zephyr/zephyr.hex
 ```
 
 Run `pyocd list` to see the connected boards. If a board reports a lock error, run

@@ -8,4 +8,4 @@ manifest:
       revision: v1.2.1
 
   self:
-    path: flrc_pingpong
+    path: flrc_throughput
