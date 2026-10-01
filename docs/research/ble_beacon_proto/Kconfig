@@ -1,0 +1,34 @@
+menu "LR2021 BLE beacon demo"
+
+choice APP_ROLE
+	prompt "Device role"
+	default APP_ROLE_BEACON
+	help
+	  BEACON sends BLE ADV_NONCONN_IND on channels 37/38/39 with the LR2021.
+	  SCAN listens on channel 37 and counts nearby advertisers.
+
+config APP_ROLE_BEACON
+	bool "Beacon (advertiser)"
+
+config APP_ROLE_SCAN
+	bool "Scanner (channel 37)"
+
+endchoice
+
+config APP_TX_POWER_DBM
+	int "TX power in dBm"
+	default 0
+	range -17 12
+
+config APP_ADV_INTERVAL_MS
+	int "Advertising interval in ms"
+	default 100
+	range 20 10240
+
+config APP_ADV_NAME
+	string "Complete Local Name in the advert"
+	default "LR2021"
+
+endmenu
+
+source "Kconfig.zephyr"

@@ -1,0 +1,129 @@
+# Copyright (c) 2026 Semtech Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# Adapted from flrc_throughput/Kconfig (role choice, FLRC settings) plus phase and ranging settings.
+# Every frequency here is limited to the 2.4 GHz ISM band. The sub-GHz antenna is a CN490 part:
+# never transmit below 2400 MHz on this bench. app_radio_limits.h re-checks this at compile time.
+
+menu "Speed and distance demo"
+
+choice APP_ROLE
+	prompt "Device role"
+	default APP_ROLE_TX
+	help
+	  TX: FLRC transmitter in the SPEED phase, ranging subordinate in the DISTANCE phase,
+	  and the phase master (it owns the phase timer).
+	  RX: FLRC receiver in the SPEED phase, ranging manager (computes the distance) in the
+	  DISTANCE phase. Build RX with -DCONFIG_APP_ROLE_RX=y.
+
+config APP_ROLE_TX
+	bool "Transmitter / ranging subordinate / phase master"
+
+config APP_ROLE_RX
+	bool "Receiver / ranging manager"
+
+endchoice # APP_ROLE
+
+# ------------------------------------------------------------------ phases
+
+config APP_SPEED_PHASE_MS
+	int "SPEED (FLRC throughput) phase length in ms"
+	default 5000
+	range 2000 60000
+
+config APP_DISTANCE_PHASE_MS
+	int "DISTANCE (LoRa ranging) phase length in ms"
+	default 5000
+	range 2000 60000
+
+config APP_SWITCH_WARN_MS
+	int "TX sets the mode-switch flag in FLRC packets this long before the switch (ms)"
+	default 100
+	range 20 1000
+
+config APP_RX_FALLBACK_MS
+	int "RX switches to DISTANCE on its own after this long without FLRC packets (ms)"
+	default 1000
+	range 200 5000
+
+# ------------------------------------------------------------------ FLRC
+
+config APP_RF_FREQ_MHZ
+	int "FLRC RF frequency in MHz"
+	default 2440
+	range 2401 2482
+	help
+	  2.4 GHz ISM only. >= 1500 MHz selects the LR2021 HF (2.4 GHz) RX path and HF PA.
+
+config APP_TX_POWER_DBM
+	int "TX power in dBm (FLRC and ranging)"
+	default 5
+	range -17 12
+	help
+	  The LR2021 HF PA range is -17..+12 dBm (usp_zephyr lr20xx_ral_bsp_calibration.c).
+
+config APP_PAYLOAD_SIZE
+	int "FLRC payload size in bytes"
+	default 511
+	range 8 511
+	help
+	  LR20xx FLRC payload range is 6..511 bytes. The first 8 bytes carry the header
+	  (sequence number, flags, ms to switch, cycle).
+
+config APP_TX_PIPELINE
+	bool "Pre-load the next TX payload in the radio FIFO while the current one is on air"
+	default y
+	help
+	  Needs 2 x APP_PAYLOAD_SIZE <= 1024 (LR20xx extended TX FIFO).
+
+config APP_SEQ_RESYNC_GAP
+	int "Largest sequence jump counted as lost packets"
+	default 10000
+
+# ------------------------------------------------------------------ ranging
+
+config APP_RANGING_CFG_FREQ_MHZ
+	int "Frequency of the ranging config / ack LoRa packets in MHz"
+	default 2440
+	range 2402 2480
+	help
+	  The RTToF exchanges hop over the stock "2G4" table (2402..2480 MHz).
+
+config APP_RANGING_SF
+	int "LoRa spreading factor for ranging"
+	default 5
+	range 5 10
+	help
+	  SF5..SF10 have calibrated delay indicators at 812 kHz above 2 GHz.
+
+config APP_RANGING_EXTRA_DELAY_MS
+	int "Extra time added to each RTToF exchange slot (ms)"
+	default 0
+	range 0 100
+	help
+	  Stock slot = 64.25 symbols + 20 ms processing (22 ms at SF5 / 812 kHz).
+
+config APP_RANGING_RSSI_WINDOW_DB
+	int "Drop hops more than this many dB below the strongest hop of the run"
+	default 100
+	range 1 100
+	help
+	  100 (default) keeps every valid hop. On the bench at 1.9 m a 10 dB window made the
+	  result worse: the strongest hops (2458-2480 MHz) were also the most biased, and only
+	  about half the hops were left for the median.
+
+config APP_RANGING_OFFSET_CM
+	int "Distance offset subtracted from every run (cm)"
+	default 0
+	help
+	  Bench calibration: place the boards at a known distance, read the smoothed distance,
+	  and set the difference here.
+
+config APP_RANGING_SMOOTH_RUNS
+	int "RX display: median of the last N run results"
+	default 5
+	range 1 15
+
+endmenu
+
+source "Kconfig.zephyr"

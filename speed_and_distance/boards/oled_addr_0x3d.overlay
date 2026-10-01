@@ -1,0 +1,6 @@
+// Board-specific fix, not role-specific: some LoRa Plus expansion boards have the
+// SSD1306 strapped to I2C address 0x3D instead of the shield default 0x3C.
+// Apply with: -- -DEXTRA_DTC_OVERLAY_FILE=boards/oled_addr_0x3d.overlay
+&ssd1306_128x64 {
+	reg = <0x3d>;
+};

@@ -12,6 +12,11 @@ root. Zephyr v4.4.0 and Semtech USP v1.2.1 are pulled in through
 | Directory | What it does |
 |---|---|
 | [`flrc_throughput/`](flrc_throughput/README.md) | One-way FLRC throughput demo at 2.44 GHz. Measured result: about 2.1 Mbps goodput and 96–98 % packet success, shown on the RX board's OLED. |
+| [`speed_and_distance/`](speed_and_distance/README.md) | Alternates 5 s of the FLRC throughput stream with 5 s of LoRa ranging (SF5, 812 kHz, 2402–2480 MHz hopping). The RX board shows Mbps and success rate, then the distance in metres. |
+
+## Parked research
+
+- [`docs/research/ble_beacon.md`](docs/research/ble_beacon.md): using the LR2021's own BLE engine as a beacon or scanner. Feasible, and the prototype compiles, but it has not been tested over the air.
 
 ## Setup (macOS)
 

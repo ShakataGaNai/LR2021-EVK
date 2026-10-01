@@ -1,0 +1,40 @@
+// /*
+//  * Copyright (c) 2024 Semtech Corporation
+//  *
+//  * SPDX-License-Identifier: Apache-2.0
+//  */
+//
+// Copied from swdm031_img_xfer (button alias dropped, PA ramp node addressed by label).
+
+// Header UART (D6/D7) is not used; the console stays on the board's USB serial.
+&xiao_serial {
+	status = "disabled";
+};
+
+// OLED on the LoRa Plus expansion board sits on i2c22 (the PER/ping_pong samples disable it).
+&i2c22 {
+	status = "okay";
+};
+
+&i2c30 {
+	status = "disabled";
+};
+
+&adc {
+	status = "disabled";
+};
+
+&wdt31 {
+	status = "disabled";
+};
+
+// With CONFIG_LV_Z_COLOR_MONO_HW_INVERSION=y and black LVGL text this renders lit-on-dark.
+&ssd1306_128x64 {
+	compatible = "solomon,ssd1306";
+	inversion-on;
+};
+
+// PA ramp time 48us (as img_xfer). 2.4 GHz HF path / PA is chosen by frequency in the BSP.
+&lora_semtech_wio_lr20xx {
+	pa-ramp-time = <0x05>; // 48us
+};
